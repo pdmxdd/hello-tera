@@ -1,15 +1,17 @@
 #![feature(plugin)]
 #![plugin(rocket_codegen)]
+#![feature(custom_derive)]
 
 extern crate rocket;
 extern crate rocket_contrib;
 #[macro_use] extern crate serde_derive;
-#[macro_use] extern crate tera;
+//#[macro_use] extern crate tera;
 
-use rocket::http::RawStr;
-use rocket::Request;
+//use rocket::http::RawStr;
+//use rocket::Request;
 use rocket::response::Redirect;
 use rocket_contrib::Template;
+use rocket::request::Form;
 
 #[derive(Serialize)]
 struct TemplateContext {
@@ -19,9 +21,11 @@ struct TemplateContext {
 
 
 #[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
+fn index() -> Redirect {
+    Redirect::to("/login")
 }
+
+
 
 //#[get("/hello/<name>")]
 //fn hello(name: &RawStr) -> String {
@@ -69,6 +73,22 @@ fn login() -> Template {
     Template::render("login", &context)
 }
 
+#[derive(FromForm)]
+struct LoginForm {
+    email: String,
+    password: String,
+}
+
+#[post("/login", data = "<loginform>")]
+fn login_post(loginform: Form<LoginForm>) -> Redirect {
+    /*
+        This is just an example of how you get information out of a form
+        you can then use that data however you want, more than likely it will go to the DB via ORM
+    */
+    println!("{}", loginform.get().email);
+    Redirect::to("/base")
+}
+
 #[get("/logout")]
 fn logout() -> Redirect {
     /* 
@@ -88,6 +108,7 @@ fn rocket() -> rocket::Rocket {
         demo_template,
         base,
         login,
+        login_post,
         logout,
     ])
     .attach(Template::fairing())
