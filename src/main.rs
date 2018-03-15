@@ -45,6 +45,10 @@ struct BaseTemplateContext {
 }
 #[get("/base")]
 fn base() -> Template {
+    /* 
+        Following struct (context) is hard coded
+        will need to be changed after we have the ORM, and DB working
+    */
     let context = BaseTemplateContext {
         title: String::from("Base"),
         logged_in: false,
@@ -54,11 +58,26 @@ fn base() -> Template {
 
 #[get("/login")]
 fn login() -> Template {
+    /* 
+        Following struct (context) is hard coded
+        will need to be changed after we have the ORM, and DB working
+    */
     let context = BaseTemplateContext {
         title: String::from("Login"),
         logged_in: true,
     };
     Template::render("login", &context)
+}
+
+#[get("/logout")]
+fn logout() -> Redirect {
+    /* 
+        We will need to put the logic for the logout here, before the redirect hits
+        1. Delete any cookies
+        2. Clear active user
+        3. Redirect to user_login page (or something)
+    */
+    Redirect::to("/base")
 }
 
 
@@ -69,6 +88,7 @@ fn rocket() -> rocket::Rocket {
         demo_template,
         base,
         login,
+        logout,
     ])
     .attach(Template::fairing())
 }
