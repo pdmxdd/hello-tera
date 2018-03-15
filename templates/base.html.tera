@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>{{ title }}</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/foundation/6.2.4/foundation.min.css">
+    </head>
+    <body>
+        <h1>BASE TEMPLATE</h1>
+        {% if logged_in %}
+            <p>LOGGED IN</p>
+        {% else %}
+            <p>NOT LOGGED IN</p>
+        {% endif %}
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <ul class="menu">
+                    <li class="menu-text">Expense Tracker</li>
+                    {%if logged_in %}
+                    <li class="item"><a href='/expenses'>Expenses</a></li>
+                    <li><a href='/categories'>Categories</a></li>
+                    <li><a href='/reports'>Reports</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="top-bar-right">
+                <ul class="menu">
+                    {% if not logged_in %}
+                    <li><a href='/signup'>Sign up</a></li>
+                    <li><a href='/login'>Login</a></li>
+                    {% else %}
+                    <li><a href='/logout'>Logout</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+        {% block body %}
+        {% endblock body %}
+        
+
+    </body>
+    
+</html>
